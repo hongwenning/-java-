@@ -1,0 +1,49 @@
+除了程序计数器外，其他几个区域都有发生OutOfMemoryError异常的可能
+
+1、java对溢出 不断创建对象到达最大堆的容量限制后产生内存溢出
+package java虚拟机;
+/*-verbose:gc -Xms512M -Xmx512M  -Xmn512M     
+-XX:+PrintGCDetails -
+XX:SurvivorRati*/
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class HeapOOM {
+    static class OOMobject{
+    }
+    public static void main(String args[]) {
+       List<OOMobject> list=new ArrayList<OOMobject>();
+       while(true) {
+    	   list.add(new OOMobject());
+       }
+    }
+}
+错误：exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+ 
+ 
+2、虚拟机栈和本地方法栈溢出
+HotSpot虚拟机中不区分虚拟机栈和本地方法栈
+如果线程请求的栈深度大于虚拟机所允许的最大深度，将抛出StackOverflowError异常
+如果虚拟机在扩展栈是无法申请大足够的内存空间，则抛出OutOfmemoryError异常
+
+package java虚拟机;
+
+public class JavaVMStackSOHF {
+     private int stackLength =1;
+     public void stackLeak()
+     {
+    	 stackLength++;
+    	 stackLeak();
+     }
+     public static void main(String arg[]) throws Throwable {
+    	 JavaVMStackSOHF oom = new JavaVMStackSOHF();
+    	 try {
+    		 oom.stackLeak();
+    	 }catch(Throwable e) {
+    		 System.out.println("stack length:"+oom.stackLength);
+    		 throw e;
+    	 }
+     }
+}
+错误：java.lang.StackOverflowError
