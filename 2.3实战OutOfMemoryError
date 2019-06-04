@@ -1,6 +1,6 @@
 除了程序计数器外，其他几个区域都有发生OutOfMemoryError异常的可能
 
-1、java对溢出 不断创建对象到达最大堆的容量限制后产生内存溢出
+1、java堆溢出 不断创建对象到达最大堆的容量限制后产生内存溢出
 package java虚拟机;
 /*-verbose:gc -Xms512M -Xmx512M  -Xmn512M     
 -XX:+PrintGCDetails -
