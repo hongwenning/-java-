@@ -47,3 +47,83 @@ public class JavaVMStackSOHF {
      }
 }
 错误：java.lang.StackOverflowError
+
+3、方法区和运行时常量池溢出
+运行时常量池是方法区的一部分，jdk1.7开始逐步去永久代（在 Jdk6 以及以前的版本中，字符串的常量池是放在堆的Perm区的，Perm区是一个类静态的区域，主要存储一些加载类的信息，常量池，方法片段等内容，默认大小只有4m，一旦常量池中大量使用 intern 是会直接产生java.lang.OutOfMemoryError:PermGen space错误的。
+在 jdk7 的版本中，字符串常量池已经从Perm区移到正常的Java Heap区域了。为什么要移动，Perm 区域太小是一个主要原因，
+Jdk8已经直接取消了Perm区域，而新建立了一个元区域。应该是jdk开发者认为Perm区域已经不适合现在 JAVA 的发展了。
+）
+package java虚拟机;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class RuntimeConstantPoolOOM {
+     public static void main(String args) {
+    	 List<String> list =new ArrayList<String>();
+    	 int i=0;
+    	 while(true) {
+    		 list.add(String.valueOf(i++).intern());
+    	 }
+     }
+}
+
+
+package java虚拟机;
+
+public class JavaMethodAreaOOM {
+  public static void main(String args) {
+	  while(true) {
+		  Enhancer enhancer = new Enhancer();
+		  enhancer.setSuperclass(OOMObject.class);
+		  enhancer.setUseCache(false);
+		  enhancer.setCallback(new MethodInterceptor)()
+		  {
+			  public Object intercept(Object obj,Methodmethod,Object[] args,MethodProxy proxy) throw Throwable{
+				  return proxy.invokeSuper(obj,args);
+				  
+			  }
+		  });
+		  enhancer.create();
+	  }
+  }
+  static class OOMObject{
+	  
+  }
+}
+
+
+4、本机直接内存溢出
+public class DirectMemoryOOM{
+    
+    private static final int _1MB =1024*1024;
+    public static void main(String[] args) throws Exception{
+     Field static void main(String args[]){
+     unsafeField =Unsafe.class.getDeclaredFields()[0];
+     Unsafe unsafe =(Unsafe) unsafeField.get(null）；
+     while(true){
+        unsafe.allocateMemory(1MB);
+}
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
